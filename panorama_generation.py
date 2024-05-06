@@ -53,18 +53,17 @@ def stitch_blend(img1, img2, H):
     Linear Blending: Linear blending uses a weighted average of pixel values from two images, 
         applying a specified ratio to create a smooth transition between overlapping regions.
     '''
-    alpha = 0.8     # alpha controls the blending ratio, favoring img2 over img1
-    for i in range(-y_min, h2 - y_min):
-        for j in range(-x_min, w2 - x_min):
-            # Check for color information in the pixel from img2
-            if np.any(img2[i + y_min][j + x_min]):
-                # Blend the pixel values if the corresponding pixel in the output image has color
-                if np.any(img_output[i][j]):
-                    img_output[i][j] = (alpha * img2[i + y_min][j + x_min]
-                                        + (1 - alpha) * img_output[i][j])
-                else:
-                    # Copy the pixel from img2 if the corresponding pixel in the output is black
-                    img_output[i][j] = img2[i + y_min][j + x_min]
+    # alpha = 0.8     # alpha controls the blending ratio, favoring img2 over img1
+    # for i in range(-y_min, h2 - y_min):
+    #     for j in range(-x_min, w2 - x_min):
+    #         # Check for color information in the pixel from img2
+    #         if np.any(img2[i + y_min][j + x_min]):
+    #             # Blend the pixel values if the corresponding pixel in the output image has color
+    #             if np.any(img_output[i][j]):
+    #                 img_output[i][j] = (alpha * img2[i + y_min][j + x_min] + (1 - alpha) * img_output[i][j])
+    #             else:
+    #                 # Copy the pixel from img2 if the corresponding pixel in the output is black
+    #                 img_output[i][j] = img2[i + y_min][j + x_min]
 
     return img_output
 
@@ -148,7 +147,7 @@ def cylindrical_project(img, f=550):
     return cylindrical_img
 
 
-# Inspired from hhttps://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
+# Inspired from https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
 def compute_homography(img1, img2):
 
     # Call the SIFT method
