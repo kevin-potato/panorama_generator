@@ -1,10 +1,10 @@
 # Panorama Generator
 
-Created by Zhongkai YANG (20318227)
+Created by Zhongkai YANG
 
 ### Project Overview
 
-Panorama Generator is a tool that utilises computer vision techniques to extract key frames from videos and generate panoramic images. This project employs the OpenCV library to handle image and video files, implementing techniques ranging from basic frame extraction to complex image stitching.
+Panorama Generator is a tool that utilises computer vision techniques to extract key frames from videos and generate panoramic images. I employ my own ways to handle image and video files, implementing techniques ranging from basic frame extraction to complex image stitching, utilising the OpenCV library.
 
 ### Features
 
