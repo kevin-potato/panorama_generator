@@ -1,6 +1,42 @@
 import cv2
 import numpy as np
 
+
+def stitch(img1, img2, H):
+ 
+    # Get dimensions of the input images
+    h1, w1 = img1.shape[:2]
+    h2, w2 = img2.shape[:2]
+
+    # Define corners of the original images
+    corners_img1 = np.float32([[0, 0], [0, h1], [w1, h1], [w1, 0]]).reshape(-1, 1, 2)
+    corners_img2 = np.float32([[0, 0], [0, h2], [w2, h2], [w2, 0]]).reshape(-1, 1, 2)
+
+    # Transform corners of img1 using the homography matrix
+    transformed_corners_img1 = cv2.perspectiveTransform(corners_img1, H)
+
+    # Determine the size of the output canvas based on transformed coordinates
+    combined_corners = np.concatenate((corners_img2, transformed_corners_img1), axis=0)
+    [x_min, y_min] = np.int32(combined_corners.min(axis=0).ravel() - 0.5)
+    [x_max, y_max] = np.int32(combined_corners.max(axis=0).ravel() + 0.5)
+    output_size = (x_max - x_min, y_max - y_min)
+
+    # The output matrix after affine transformation
+    offset_transform = np.array([[1, 0, -x_min], [0, 1, -y_min], [0, 0, 1]])
+
+    # Warp img1 using the composite transformation matrix
+    transformed_img1 = cv2.warpPerspective(img1, offset_transform.dot(H), output_size)
+
+    # Create output image and place img2 within the new canvas
+    output_image = transformed_img1.copy()
+    for y in range(h2):
+        for x in range(w2):
+            if all(img2[y, x] != 0):  # Check if the pixel is not completely black
+                output_image[y - y_min, x - x_min] = img2[y, x]
+
+    return output_image
+
+
 def stitch_blend(img1, img2, H):
 
     # Get dimensions of the input images
@@ -69,41 +105,6 @@ def stitch_blend(img1, img2, H):
 
 
 
-def stitch(img1, img2, H):
- 
-    # Get dimensions of the input images
-    h1, w1 = img1.shape[:2]
-    h2, w2 = img2.shape[:2]
-
-    # Define corners of the original images
-    corners_img1 = np.float32([[0, 0], [0, h1], [w1, h1], [w1, 0]]).reshape(-1, 1, 2)
-    corners_img2 = np.float32([[0, 0], [0, h2], [w2, h2], [w2, 0]]).reshape(-1, 1, 2)
-
-    # Transform corners of img1 using the homography matrix
-    transformed_corners_img1 = cv2.perspectiveTransform(corners_img1, H)
-
-    # Determine the size of the output canvas based on transformed coordinates
-    combined_corners = np.concatenate((corners_img2, transformed_corners_img1), axis=0)
-    [x_min, y_min] = np.int32(combined_corners.min(axis=0).ravel() - 0.5)
-    [x_max, y_max] = np.int32(combined_corners.max(axis=0).ravel() + 0.5)
-    output_size = (x_max - x_min, y_max - y_min)
-
-    # The output matrix after affine transformation
-    offset_transform = np.array([[1, 0, -x_min], [0, 1, -y_min], [0, 0, 1]])
-
-    # Warp img1 using the composite transformation matrix
-    transformed_img1 = cv2.warpPerspective(img1, offset_transform.dot(H), output_size)
-
-    # Create output image and place img2 within the new canvas
-    output_image = transformed_img1.copy()
-    for y in range(h2):
-        for x in range(w2):
-            if all(img2[y, x] != 0):  # Check if the pixel is not completely black
-                output_image[y - y_min, x - x_min] = img2[y, x]
-
-    return output_image
-
-
 # Mathematicals are from https://www.cnblogs.com/cheermyang/p/5431170.html
 def cylindrical_project(img, f=550):
 
@@ -145,6 +146,7 @@ def cylindrical_project(img, f=550):
                 cylindrical_img[j, i, :] = 0
 
     return cylindrical_img
+
 
 
 # Inspired from https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
@@ -203,6 +205,7 @@ def compute_homography(img1, img2):
         return None
 
 
+
 def crop_result(result_img):
     
     # Determine the height and width of the input image
@@ -221,6 +224,7 @@ def crop_result(result_img):
     result_img = result_img[h1:h2, :w_new]
 
     return result_img
+
 
 def cut_corners(img):
 
@@ -241,6 +245,7 @@ def cut_corners(img):
      # Crop the image to the new dimensions
     new_img = img[height_start: height_start + newheight, width_start: width_start + new_width]
     return new_img
+
 
 
 def stitch_image(img1_path, img2_path):
@@ -264,6 +269,7 @@ def stitch_image(img1_path, img2_path):
     stitched_image = crop_result(stitched_image)
 
     return stitched_image
+
 
 
 if __name__ == "__main__":
