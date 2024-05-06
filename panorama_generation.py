@@ -33,20 +33,20 @@ def stitch_blend(img1, img2, H):
         resulting in a direct blend without emphasizing either image.
     
     '''
-    for i in range(-y_min, h2 - y_min):
-        for j in range(-x_min, w2 - x_min):
-            # Check if the pixel in img2 at this position contains color information (not black)
-            if np.any(img2[i + y_min][j + x_min]):
-                if np.any(img_output[i][j]):
-                    # If the corresponding pixel in the output image also has color information,
-                    # average the color values of img1 and img2
-                    for k in range(depth):
-                        img_output[i][j][k] = np.uint8(
-                            (int(img2[i + y_min][j + x_min][k])
-                             + int(img_output[i][j][k])) / 2)
-                else:
-                    # If the output image pixel is black, directly copy the pixel from img2
-                    img_output[i][j] = img2[i + y_min][j + x_min]
+    # for i in range(-y_min, h2 - y_min):
+    #     for j in range(-x_min, w2 - x_min):
+    #         # Check if the pixel in img2 at this position contains color information (not black)
+    #         if np.any(img2[i + y_min][j + x_min]):
+    #             if np.any(img_output[i][j]):
+    #                 # If the corresponding pixel in the output image also has color information,
+    #                 # average the color values of img1 and img2
+    #                 for k in range(depth):
+    #                     img_output[i][j][k] = np.uint8(
+    #                         (int(img2[i + y_min][j + x_min][k])
+    #                          + int(img_output[i][j][k])) / 2)
+    #             else:
+    #                 # If the output image pixel is black, directly copy the pixel from img2
+    #                 img_output[i][j] = img2[i + y_min][j + x_min]
 
 
     '''
@@ -279,6 +279,5 @@ if __name__ == "__main__":
 
     result = current_img
     result = cut_corners(result)
-    # cv2.imwrite('panoramic_without crop.jpg', result)
-    cv2.imwrite('panorama4.jpg', result)
+    cv2.imwrite('panorama.jpg', result)
     print("panoramic.jpg complete!")

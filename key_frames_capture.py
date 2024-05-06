@@ -65,4 +65,4 @@ def key_frames_capture(filename):
     cap.release()
 
 if __name__ == "__main__":
-    key_frames_capture('test2.mp4')
+    key_frames_capture('video1.mp4')

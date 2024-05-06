@@ -6,6 +6,8 @@ Created by Zhongkai YANG
 
 Panorama Generator is a tool that utilises computer vision techniques to extract key frames from videos and generate panoramic images. I employ my own ways to handle image and video files, implementing techniques ranging from basic frame extraction to complex image stitching, utilising the OpenCV library.
 
+Due to my setup, the direction of video rotation needs to be strictly left to right.
+
 ### Features
 
 - **Key Frame Extraction**: Automatically detect and extract key frames from video files.
